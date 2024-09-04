@@ -1,0 +1,4 @@
+.idea
+/state-bucket/.terraform*
+/state-bucket/terraform*
+.terraform*
