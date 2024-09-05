@@ -1,0 +1,46 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-app-deployment
+  region: us-east-1
+
+vpc:
+  id: ${VPC_ID}
+  subnets:
+    public:
+      us-east-1a:
+        id: ${PUBLIC_SUBNET_ID_1}
+      us-east-1b:
+        id: ${PUBLIC_SUBNET_ID_2}
+    private:
+      us-east-1a:
+        id: ${PRIVATE_SUBNET_ID_1}
+      us-east-1b:
+        id: ${PRIVATE_SUBNET_ID_2}
+
+managedNodeGroups:
+  - name: cluster-components
+    instanceType: m5.large
+    minSize: 1
+    desiredCapacity: 2
+    maxSize: 3
+    availabilityZones: ["us-east-1a","us-east-1b"]
+    privateNetworking: true
+    labels:
+      role: worker
+      workload: cluster-components
+
+  - name: application-workload
+    instanceType: m5.large
+    minSize: 1
+    desiredCapacity: 2
+    maxSize: 3
+    availabilityZones: [ "us-east-1a","us-east-1b" ]
+    privateNetworking: true
+    labels:
+      role: worker
+      workload: application
+
+iam:
+  withOIDC: true
