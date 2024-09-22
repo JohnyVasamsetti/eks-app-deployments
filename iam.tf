@@ -54,7 +54,7 @@ resource "aws_iam_role_policy_attachment" "container_registry_policy" {
 
 # aws alb controller role & policy
 resource "aws_iam_role" "aws_alb_controller_role" {
-  name = "aws-alb-controller-role"
+  name = "AmazonEKSLoadBalancerControllerRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -68,7 +68,7 @@ resource "aws_iam_role" "aws_alb_controller_role" {
 }
 
 resource "aws_iam_policy" "aws_alb_controller_policy" {
-  name = "aws-alb-controller-policy"
+  name = "AWSLoadBalancerControllerIAMPolicy"
   policy = file("./policies/alb_controller_policy.json")
 }
 
