@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: static-ap
+  namespace: app
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: static-app
+  template:
+    metadata:
+      labels:
+        app: static-app
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: static-app
+          image: nginx:latest
+          resources:
+            requests:
+              cpu: 1
+      tolerations:
+        - key: "workload"
+          operator: "Equal"
+          value: "app-components"
+          effect: "NoSchedule"
+      nodeSelector:
+        workload: app-components
