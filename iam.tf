@@ -51,3 +51,28 @@ resource "aws_iam_role_policy_attachment" "container_registry_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.worker_node_role.name
 }
+
+# aws alb controller role & policy
+resource "aws_iam_role" "aws_alb_controller_role" {
+  name = "aws-alb-controller-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity",
+      Effect = "Allow",
+      Principal = {
+        Federated = [data.aws_iam_openid_connect_provider.oidc_provider.arn]
+      }
+    }]
+  })
+}
+
+resource "aws_iam_policy" "aws_alb_controller_policy" {
+  name = "aws-alb-controller-policy"
+  policy = file("./policies/alb_controller_policy.json")
+}
+
+resource "aws_iam_role_policy_attachment" "aws_alb_controller_attachment" {
+  policy_arn = aws_iam_policy.aws_alb_controller_policy.arn
+  role       = aws_iam_role.aws_alb_controller_role.name
+}
