@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "eks_vpc_controller_policy" {
 
 # worker node role
 resource "aws_iam_role" "worker_node_role" {
-  name = "worker-node-role"
+  name = "Ec2InstanceWorkerNodeRole"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
