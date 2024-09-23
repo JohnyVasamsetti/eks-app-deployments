@@ -79,3 +79,31 @@ resource "aws_eks_node_group" "app-components" {
     value  = "app-components"
   }
 }
+
+data "aws_eks_cluster" "cluster" {
+  name = aws_eks_cluster.eks_app_deployment.id
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks_app_deployment.id
+}
+
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+resource "kubernetes_service_account" "alb_controller" {
+  metadata {
+    name      = "aws-load-balancer-controller"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn" : aws_iam_role.aws_alb_controller_role.arn
+    }
+    labels = {
+      "app.kubernetes.io/component" : "controller"
+      "app.kubernetes.io/name" : "aws-load-balancer-controller"
+    }
+  }
+}
