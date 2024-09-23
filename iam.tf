@@ -3,8 +3,8 @@ resource "aws_iam_role" "eks_control_plane_role" {
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
-      Action    = "sts:AssumeRole",
-      Effect    = "Allow",
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
       Principal = {
         Service = "eks.amazonaws.com"
       }
@@ -68,7 +68,7 @@ resource "aws_iam_role" "aws_alb_controller_role" {
 }
 
 resource "aws_iam_policy" "aws_alb_controller_policy" {
-  name = "AWSLoadBalancerControllerIAMPolicy"
+  name   = "AWSLoadBalancerControllerIAMPolicy"
   policy = file("./policies/alb_controller_policy.json")
 }
 
