@@ -39,6 +39,8 @@ resource "aws_subnet" "public_subnet_1" {
   tags = {
     task = "eks-app-deployment"
     Name = "public-subnet-1"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb" = 1
   }
 }
 
@@ -48,8 +50,10 @@ resource "aws_subnet" "public_subnet_2" {
   availability_zone       = local.availability_zone_2
   map_public_ip_on_launch = true
   tags = {
-    task = "eks-app-deployment"
-    Name = "public-subnet-2"
+    "task" = "eks-app-deployment"
+    "Name" = "public-subnet-2"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb" = 1
   }
 }
 
@@ -58,8 +62,10 @@ resource "aws_subnet" "private_subnet_1" {
   cidr_block        = local.private_subnet_cidr_block_1
   availability_zone = local.availability_zone_1
   tags = {
-    task = "eks-app-deployment"
-    Name = "private-subnet-1"
+    "task" = "eks-app-deployment"
+    "Name" = "private-subnet-1"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
   }
 }
 
@@ -68,8 +74,10 @@ resource "aws_subnet" "private_subnet_2" {
   cidr_block        = local.private_subnet_cidr_block_2
   availability_zone = local.availability_zone_2
   tags = {
-    task = "eks-app-deployment"
-    Name = "private-subnet-2"
+    "task" = "eks-app-deployment"
+    "Name" = "private-subnet-2"
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
   }
 }
 
