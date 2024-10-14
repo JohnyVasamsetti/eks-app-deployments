@@ -76,3 +76,28 @@ resource "aws_iam_role_policy_attachment" "aws_alb_controller_attachment" {
   policy_arn = aws_iam_policy.aws_alb_controller_policy.arn
   role       = aws_iam_role.aws_alb_controller_role.name
 }
+
+# external-dns controller role & policy
+resource "aws_iam_role" "external_dns_controller_role" {
+  name = "ExternalDnsControllerRole"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity",
+      Effect = "Allow",
+      Principal = {
+        Federated = [data.aws_iam_openid_connect_provider.oidc_provider.arn]
+      }
+    }]
+  })
+}
+
+resource "aws_iam_policy" "external_dns_controller_policy" {
+  name = "ExternalDnsController"
+  policy = file("./policies/external-dns-controller.json")
+}
+
+resource "aws_iam_role_policy_attachment" "external_dns_controller_attachment" {
+  policy_arn = aws_iam_policy.external_dns_controller_policy.arn
+  role       = aws_iam_role.external_dns_controller_role.name
+}
