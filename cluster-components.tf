@@ -108,6 +108,10 @@ resource "kubernetes_service_account" "alb_controller" {
   }
 }
 
+resource "aws_route53_zone" "hosted_zone" {
+  name = local.domain
+}
+
 resource "aws_acm_certificate" "acm_certificate" {
   domain_name = local.domain
   subject_alternative_names = ["*.${local.domain}"]
