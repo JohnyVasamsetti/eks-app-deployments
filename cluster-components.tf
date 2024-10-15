@@ -107,3 +107,9 @@ resource "kubernetes_service_account" "alb_controller" {
     }
   }
 }
+
+resource "aws_acm_certificate" "acm_certificate" {
+  domain_name = local.domain
+  subject_alternative_names = ["*.${local.domain}"]
+  validation_method = "DNS"
+}
