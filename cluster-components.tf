@@ -1,3 +1,4 @@
+# Kubernetes Cluster
 resource "aws_eks_cluster" "eks_app_deployment" {
   name = "eks-app-deployment"
   vpc_config {
@@ -89,35 +90,4 @@ resource "kubernetes_service_account" "alb_controller" {
       "app.kubernetes.io/name" : "aws-load-balancer-controller"
     }
   }
-}
-
-resource "aws_route53_zone" "hosted_zone" {
-  name = local.domain
-}
-
-resource "aws_acm_certificate" "acm_certificate" {
-  domain_name               = local.domain
-  subject_alternative_names = ["*.${local.domain}"]
-  validation_method         = "DNS"
-}
-
-resource "aws_route53_record" "dns_validation_records" {
-  for_each = { for dns_validation_records in aws_acm_certificate.acm_certificate.domain_validation_options : dns_validation_records.domain_name => {
-    name    = dns_validation_records.resource_record_name
-    type    = dns_validation_records.resource_record_type
-    records = dns_validation_records.resource_record_value
-    }
-  }
-
-  allow_overwrite = true
-  name            = each.value.name
-  type            = each.value.type
-  records         = [each.value.records]
-  ttl             = 60
-  zone_id         = aws_route53_zone.hosted_zone.id
-}
-
-resource "aws_acm_certificate_validation" "acm_certificate_validation" {
-  certificate_arn         = aws_acm_certificate.acm_certificate.arn
-  validation_record_fqdns = [for record in aws_route53_record.dns_validation_records : record.fqdn]
 }

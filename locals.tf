@@ -7,5 +7,6 @@ locals {
   availability_zone_1         = "us-east-1a"
   availability_zone_2         = "us-east-1b"
   cluster_name                = "eks-app-deployment"
-  domain  = "testdomainafd.link"
+  domain                      = "testdomainafd.link"
+  website_url                 = "demo.testdomainafd.link"
 }
