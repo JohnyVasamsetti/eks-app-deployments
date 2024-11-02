@@ -16,23 +16,7 @@ resource "aws_iam_openid_connect_provider" "oidc_provider" {
   }
 }
 
-data "aws_iam_openid_connect_provider" "oidc_provider" {
-  url        = aws_eks_cluster.eks_app_deployment.identity[0].oidc[0].issuer
-  depends_on = [aws_iam_openid_connect_provider.oidc_provider]
-}
-
-resource "aws_launch_template" "eks_node_launch_template" {
-  name_prefix   = "eks-node-launch-template"
-  instance_type = "m5.large"
-
-  metadata_options {
-    http_tokens                 = "required"
-    http_endpoint               = "enabled"
-    http_put_response_hop_limit = 2
-    instance_metadata_tags      = "enabled"
-  }
-}
-
+# Creating Node Groups
 resource "aws_eks_node_group" "cluster-components" {
   node_group_name = "cluster-components"
   cluster_name    = aws_eks_cluster.eks_app_deployment.name
@@ -80,20 +64,19 @@ resource "aws_eks_node_group" "app-components" {
   }
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.eks_app_deployment.id
+resource "aws_launch_template" "eks_node_launch_template" {
+  name_prefix   = "eks-node-launch-template"
+  instance_type = "m5.large"
+
+  metadata_options {
+    http_tokens                 = "required"
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 2
+    instance_metadata_tags      = "enabled"
+  }
 }
 
-data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.eks_app_deployment.id
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
+# Service Accounts
 resource "kubernetes_service_account" "alb_controller" {
   metadata {
     name      = "aws-load-balancer-controller"

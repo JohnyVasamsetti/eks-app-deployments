@@ -69,7 +69,7 @@ resource "aws_iam_role" "aws_alb_controller_role" {
 
 resource "aws_iam_policy" "aws_alb_controller_policy" {
   name   = "AWSLoadBalancerControllerIAMPolicy"
-  policy = file("./policies/alb_controller_policy.json")
+  policy = file("./policies/alb-controller-policy.json")
 }
 
 resource "aws_iam_role_policy_attachment" "aws_alb_controller_attachment" {
