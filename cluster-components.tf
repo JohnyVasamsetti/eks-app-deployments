@@ -76,18 +76,3 @@ resource "aws_launch_template" "eks_node_launch_template" {
     instance_metadata_tags      = "enabled"
   }
 }
-
-# Service Accounts
-resource "kubernetes_service_account" "alb_controller" {
-  metadata {
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
-    annotations = {
-      "eks.amazonaws.com/role-arn" : aws_iam_role.aws_alb_controller_role.arn
-    }
-    labels = {
-      "app.kubernetes.io/component" : "controller"
-      "app.kubernetes.io/name" : "aws-load-balancer-controller"
-    }
-  }
-}
