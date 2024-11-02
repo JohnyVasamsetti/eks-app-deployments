@@ -93,7 +93,7 @@ resource "aws_iam_role" "external_dns_controller_role" {
 }
 
 resource "aws_iam_policy" "external_dns_controller_policy" {
-  name = "ExternalDnsController"
+  name   = "ExternalDnsController"
   policy = file("./policies/external-dns-controller.json")
 }
 
