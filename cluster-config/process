@@ -1,0 +1,20 @@
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm upgrade --install external-dns bitnami/external-dns -n kube-system \
+    --set provider=aws \
+    --set domainFilters[0]=testdomainafd.link \
+    --set source[0]=ingress \
+    --set policy=sync \
+    --set registry=txt \
+    --set interval=1m \
+    --set triggerLoopOnEvent=true \
+    --set aws-zones-cache-duration=1h \
+    --set rbac.create=true \
+    --set rbac.serviceAccountName=external-dns \
+    --set image.tag=0.12.2 \
+    --set serviceAccount.annotations."eks\\.amazonaws\\.com/role-arn"=arn:aws:iam::160071257600:role/ExternalDnsControllerRole
+
+
+ns-250.awsdns-31.com
+ns-716.awsdns-25.net
+ns-1089.awsdns-08.org
+ns-2010.awsdns-59.co.uk
